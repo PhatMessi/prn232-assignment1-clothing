@@ -3,8 +3,9 @@ import Link from "next/link";
 import { ShoppingBag, Search, Plus } from "lucide-react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import { Suspense } from "react";
 
-export default function Navbar() {
+function NavbarContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -12,14 +13,16 @@ export default function Navbar() {
   // Hàm xử lý tìm kiếm
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams.toString());
+    
     if (term) {
       params.set('search', term);
-      params.set('page', '1'); // Reset về trang 1 khi tìm
+      params.set('page', '1'); // Reset về trang 1 khi tìm kiếm
     } else {
       params.delete('search');
     }
     replace(`${pathname}?${params.toString()}`);
   }, 300);
+
   return (
     <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,5 +76,16 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={
+      // Fallback UI (Tránh vỡ layout khi đang load)
+      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 h-16" />
+    }>
+      <NavbarContent />
+    </Suspense>
   );
 }
