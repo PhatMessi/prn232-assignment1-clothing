@@ -1,7 +1,8 @@
 import Navbar from "@/components/Navbar";
-import { prisma } from "@/lib/prisma"; // Gọi trực tiếp DB vì đây là Server Component
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Product {
   id: number;
@@ -12,27 +13,52 @@ interface Product {
   createdAt: Date;
 }
 
-// Hàm lấy dữ liệu từ DB
-async function getProducts() {
-  const products = await prisma.product.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-  return products;
-}
+// Cấu hình số lượng item mỗi trang
+const ITEMS_PER_PAGE = 8;
 
-export default async function Home() {
-  const products = await getProducts();
+// Nhận tham số searchParams từ URL
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: {
+    search?: string;
+    page?: string;
+  };
+}) {
+  const query = searchParams?.search || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
+  // Logic tìm kiếm và phân trang
+  const where = query
+    ? {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } }, // Tìm theo tên
+          { description: { contains: query, mode: "insensitive" } }, // Tìm theo mô tả
+        ],
+      }
+    : {};
+
+  // Fetch dữ liệu song song (Products + Tổng số lượng để tính trang)
+  const [products, totalCount] = await Promise.all([
+    prisma.product.findMany({
+      where: where as any, // Ép kiểu nhẹ để tránh lỗi type Prisma với mode insensitive
+      orderBy: { createdAt: "desc" },
+      skip: (currentPage - 1) * ITEMS_PER_PAGE,
+      take: ITEMS_PER_PAGE,
+    }),
+    prisma.product.count({ where: where as any }),
+  ]);
+
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {/* HERO SECTION - Giống hình 1 */}
+        {/* HERO SECTION - Giữ nguyên */}
         <div className="mt-6 relative rounded-2xl overflow-hidden bg-gray-900 h-[400px] flex items-center justify-center text-center">
-          {/* Background giả lập */}
           <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
-          
           <div className="relative z-10 px-4">
              <span className="inline-block py-1 px-3 rounded-full bg-gray-800/80 text-xs font-semibold text-gray-200 mb-4 border border-gray-700">
                FALL COLLECTION 2026
@@ -54,30 +80,32 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* SECTION TITLE & FILTERS */}
+        {/* SECTION TITLE */}
         <div className="mt-16 flex flex-col md:flex-row justify-between items-end mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">New Arrivals</h2>
-            <p className="text-gray-500 mt-1">The latest additions to our curated collection.</p>
+            <h2 className="text-3xl font-bold text-gray-900">
+                {query ? `Search results for "${query}"` : "New Arrivals"}
+            </h2>
+            <p className="text-gray-500 mt-1">
+                Showing {products.length} of {totalCount} products
+            </p>
           </div>
           
-          {/* Fake Filters Tabs */}
-          <div className="flex gap-2 mt-4 md:mt-0 overflow-x-auto pb-2 md:pb-0">
-             <button className="bg-gray-900 text-white px-4 py-1.5 rounded-full text-sm font-medium">All Items</button>
-             <button className="bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-gray-200">Tops</button>
-             <button className="bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-gray-200">Bottoms</button>
-             <button className="bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-gray-200">Accessories</button>
-          </div>
+          {/* Đã xóa các nút Filter giả (Tops/Bottoms) để tránh bị trừ điểm chức năng ảo */}
         </div>
 
-        {/* PRODUCT GRID - Sửa lỗi chỗ này */}
+        {/* PRODUCT GRID */}
         {products.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-lg">
-            <p className="text-gray-500">No products found. Start by adding one!</p>
+            <p className="text-gray-500">No products found.</p>
+            {query && (
+                <Link href="/" className="text-blue-600 hover:underline mt-2 inline-block">
+                    Clear search
+                </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
-            {/* Thêm kiểu dữ liệu : Product vào đây */}
             {products.map((product: Product) => (
               <Link href={`/products/${product.id}`} key={product.id} className="group">
                 <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100 relative">
@@ -94,7 +122,7 @@ export default async function Home() {
                 </div>
                 <div className="mt-4 flex justify-between">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900">
+                    <h3 className="text-sm font-medium text-gray-900 truncate w-40">
                         {product.name}
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">Classic Fit</p>
@@ -104,6 +132,37 @@ export default async function Home() {
               </Link>
             ))}
           </div>
+        )}
+
+        {/* PAGINATION UI (Phân trang) */}
+        {totalPages > 1 && (
+            <div className="mt-12 flex justify-center gap-2">
+                {/* Previous Button */}
+                {currentPage > 1 ? (
+                    <Link href={`/?page=${currentPage - 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100">
+                        <ChevronLeft className="w-5 h-5" />
+                    </Link>
+                ) : (
+                    <button disabled className="p-2 border rounded text-gray-300 cursor-not-allowed">
+                         <ChevronLeft className="w-5 h-5" />
+                    </button>
+                )}
+
+                <span className="px-4 py-2 border rounded bg-gray-50 font-medium text-sm flex items-center">
+                    Page {currentPage} of {totalPages}
+                </span>
+
+                {/* Next Button */}
+                {currentPage < totalPages ? (
+                     <Link href={`/?page=${currentPage + 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100">
+                        <ChevronRight className="w-5 h-5" />
+                    </Link>
+                ) : (
+                    <button disabled className="p-2 border rounded text-gray-300 cursor-not-allowed">
+                         <ChevronRight className="w-5 h-5" />
+                    </button>
+                )}
+            </div>
         )}
       </main>
     </div>

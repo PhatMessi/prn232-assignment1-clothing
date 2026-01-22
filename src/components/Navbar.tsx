@@ -1,8 +1,25 @@
 "use client";
 import Link from "next/link";
 import { ShoppingBag, Search, Plus } from "lucide-react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function Navbar() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  // Hàm xử lý tìm kiếm
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (term) {
+      params.set('search', term);
+      params.set('page', '1'); // Reset về trang 1 khi tìm
+    } else {
+      params.delete('search');
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
   return (
     <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +41,12 @@ export default function Navbar() {
               <input
                 type="text"
                 className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                placeholder="Search for products..."
+                placeholder="Search products..."
+                onChange={(e) => {
+                    // Debounce đơn giản 300ms
+                    setTimeout(() => handleSearch(e.target.value), 300);
+                }}
+                defaultValue={searchParams.get('search')?.toString()}
               />
             </div>
           </div>
