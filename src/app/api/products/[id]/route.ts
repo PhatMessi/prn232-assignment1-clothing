@@ -20,7 +20,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   try {
     const id = parseInt(params.id);
     const body = await request.json();
-    const { name, description, price, image } = body;
+    // Thêm category và stock vào logic cập nhật
+    const { name, description, price, image, category, stock } = body;
 
     const updatedProduct = await prisma.product.update({
       where: { id },
@@ -29,11 +30,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         description,
         price: parseFloat(price),
         image,
+        category: category || "General", // Cập nhật danh mục
+        stock: parseInt(stock) || 0,     // Cập nhật tồn kho
       },
     });
 
     return NextResponse.json(updatedProduct);
   } catch (error) {
+    console.error("Update Error:", error);
     return NextResponse.json({ error: 'Error updating product' }, { status: 500 });
   }
 }
