@@ -56,7 +56,7 @@ export default async function Home({
           <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
           <div className="relative z-10 px-4">
              <span className="inline-block py-1 px-3 rounded-full bg-gray-800/80 text-xs font-semibold text-gray-200 mb-4 border border-gray-700">
-               FALL COLLECTION 2026
+               SPRING COLLECTION 2026
              </span>
              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
                Shop <br/> Clothing.
