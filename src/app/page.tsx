@@ -13,10 +13,8 @@ interface Product {
   createdAt: Date;
 }
 
-// Cấu hình số lượng item mỗi trang
 const ITEMS_PER_PAGE = 8;
 
-// Nhận tham số searchParams từ URL
 export default async function Home({
   searchParams,
 }: {
@@ -28,20 +26,18 @@ export default async function Home({
   const query = searchParams?.search || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  // Logic tìm kiếm và phân trang
   const where = query
     ? {
         OR: [
-          { name: { contains: query, mode: "insensitive" } }, // Tìm theo tên
-          { description: { contains: query, mode: "insensitive" } }, // Tìm theo mô tả
+          { name: { contains: query, mode: "insensitive" } }, 
+          { description: { contains: query, mode: "insensitive" } }, 
         ],
       }
     : {};
 
-  // Fetch dữ liệu song song (Products + Tổng số lượng để tính trang)
   const [products, totalCount] = await Promise.all([
     prisma.product.findMany({
-      where: where as any, // Ép kiểu nhẹ để tránh lỗi type Prisma với mode insensitive
+      where: where as any, 
       orderBy: { createdAt: "desc" },
       skip: (currentPage - 1) * ITEMS_PER_PAGE,
       take: ITEMS_PER_PAGE,
@@ -56,7 +52,6 @@ export default async function Home({
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {/* HERO SECTION - Giữ nguyên */}
         <div className="mt-6 relative rounded-2xl overflow-hidden bg-gray-900 h-[400px] flex items-center justify-center text-center">
           <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
           <div className="relative z-10 px-4">
@@ -91,10 +86,8 @@ export default async function Home({
             </p>
           </div>
           
-          {/* Đã xóa các nút Filter giả (Tops/Bottoms) để tránh bị trừ điểm chức năng ảo */}
         </div>
 
-        {/* PRODUCT GRID */}
         {products.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-lg">
             <p className="text-gray-500">No products found.</p>
@@ -134,10 +127,8 @@ export default async function Home({
           </div>
         )}
 
-        {/* PAGINATION UI (Phân trang) */}
         {totalPages > 1 && (
             <div className="mt-12 flex justify-center gap-2">
-                {/* Previous Button */}
                 {currentPage > 1 ? (
                     <Link href={`/?page=${currentPage - 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100">
                         <ChevronLeft className="w-5 h-5" />
@@ -152,7 +143,6 @@ export default async function Home({
                     Page {currentPage} of {totalPages}
                 </span>
 
-                {/* Next Button */}
                 {currentPage < totalPages ? (
                      <Link href={`/?page=${currentPage + 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100">
                         <ChevronRight className="w-5 h-5" />

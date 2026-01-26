@@ -12,7 +12,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
-  // State lưu dữ liệu form (Đã thêm category và stock)
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -22,7 +21,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     image: "",
   });
 
-  // 1. Lấy dữ liệu cũ khi vào trang
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,7 +28,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         if (!res.ok) throw new Error("Product not found");
         const data = await res.json();
         
-        // Đổ dữ liệu vào form
         setFormData({
             name: data.name,
             price: data.price.toString(),
@@ -66,7 +63,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     setFormData(prev => ({ ...prev, image: random }));
   };
 
-  // 2. Gửi lệnh cập nhật (PUT)
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -77,7 +73,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       });
 
       if (res.ok) {
-        // Cập nhật xong thì quay về trang chi tiết
         router.push(`/products/${params.id}`); 
         router.refresh(); 
       } else {
@@ -98,7 +93,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Header - Xóa nút action cũ */}
         <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Edit Product</h1>
             <p className="text-gray-500 mt-1">Update product information</p>
@@ -198,7 +192,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
             </div>
           </div>
 
-          {/* RIGHT COLUMN: LIVE PREVIEW & ACTIONS */}
           <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>

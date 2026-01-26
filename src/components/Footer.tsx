@@ -5,7 +5,6 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-300 py-12 border-t border-gray-800 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Cột 1: Thông tin */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-white">Shopping</h3>
             <p className="text-sm text-gray-400">
@@ -13,7 +12,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Cột 2: Links */}
           <div>
             <h4 className="font-semibold text-white mb-4">Shop</h4>
             <ul className="space-y-2 text-sm">
@@ -23,7 +21,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Cột 3: Support */}
           <div>
             <h4 className="font-semibold text-white mb-4">Support</h4>
             <ul className="space-y-2 text-sm">
@@ -33,7 +30,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Cột 4: Newsletter (Giả lập) */}
           <div>
             <h4 className="font-semibold text-white mb-4">Stay in the loop</h4>
             <div className="flex gap-2">

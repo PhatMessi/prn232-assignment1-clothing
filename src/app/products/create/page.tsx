@@ -4,14 +4,13 @@ import Navbar from "@/components/Navbar";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Save, RefreshCw, X } from "lucide-react"; // Đã thêm icon X cho nút Cancel
+import { Save, RefreshCw, X } from "lucide-react"; 
 import Link from "next/link";
 
 export default function CreateProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // State dữ liệu Form
   const [formData, setFormData] = useState({
     name: "Classic Essential Tee",
     price: "49.99",
@@ -65,14 +64,12 @@ export default function CreateProductPage() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Header - ĐÃ XÓA NÚT Ở ĐÂY */}
         <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Create Product</h1>
             <p className="text-gray-500 mt-1">Add a new item to your inventory</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* LEFT COLUMN: FORM INPUT */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
             <div className="space-y-6">
               
@@ -168,7 +165,6 @@ export default function CreateProductPage() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: LIVE PREVIEW & ACTIONS */}
           <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -199,8 +195,6 @@ export default function CreateProductPage() {
                     {formData.description || "Product description will appear here..."}
                 </p>
 
-                {/* --- KHU VỰC ACTION BUTTONS (MỚI) --- */}
-                {/* Thay thế nút Add to Cart bằng 2 nút Cancel và Save */}
                 <div className="w-full mt-auto pt-6 border-t border-gray-100 flex gap-3">
                     <Link href="/" className="flex-1 py-3 px-4 bg-white border border-gray-300 text-gray-700 rounded-lg font-bold text-sm hover:bg-gray-50 hover:text-black transition flex items-center justify-center gap-2">
                         <X className="w-4 h-4" />

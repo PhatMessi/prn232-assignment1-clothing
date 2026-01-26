@@ -10,13 +10,12 @@ function NavbarContent() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  // Hàm xử lý tìm kiếm
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams.toString());
     
     if (term) {
       params.set('search', term);
-      params.set('page', '1'); // Reset về trang 1 khi tìm kiếm
+      params.set('page', '1'); 
     } else {
       params.delete('search');
     }
@@ -27,7 +26,6 @@ function NavbarContent() {
     <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="w-6 h-6 bg-blue-600 rounded-sm transform rotate-45 flex items-center justify-center">
                <div className="w-2 h-2 bg-white transform -rotate-45"></div>
@@ -35,7 +33,6 @@ function NavbarContent() {
             <span className="font-bold text-xl tracking-tight text-gray-900">Clothing Store</span>
           </Link>
 
-          {/* Search Bar (Giả lập theo design) */}
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -46,7 +43,6 @@ function NavbarContent() {
                 className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-500 sm:text-sm"
                 placeholder="Search products..."
                 onChange={(e) => {
-                    // Debounce đơn giản 300ms
                     setTimeout(() => handleSearch(e.target.value), 300);
                 }}
                 defaultValue={searchParams.get('search')?.toString()}
@@ -82,7 +78,6 @@ function NavbarContent() {
 export default function Navbar() {
   return (
     <Suspense fallback={
-      // Fallback UI (Tránh vỡ layout khi đang load)
       <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 h-16" />
     }>
       <NavbarContent />

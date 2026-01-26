@@ -7,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Edit, Trash2, ShoppingBag, ArrowLeft, AlertTriangle, X } from "lucide-react";
 
-// Định nghĩa kiểu dữ liệu cho sản phẩm
 interface Product {
   id: number;
   name: string;
@@ -24,10 +23,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   
-  // State điều khiển Hộp thoại xác nhận xóa
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // 1. Lấy dữ liệu sản phẩm
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -45,7 +42,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     fetchProduct();
   }, [params.id, router]);
 
-  // 2. Hàm Xóa sản phẩm (Gọi khi bấm Confirm trong Modal)
   const confirmDelete = async () => {
     setDeleting(true);
     try {
@@ -54,7 +50,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       });
 
       if (res.ok) {
-        // Xóa thành công => Đóng modal & chuyển hướng
         setShowDeleteModal(false); 
         router.push("/"); 
         router.refresh();
@@ -158,7 +153,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         Edit Product
                     </Link>
 
-                    {/* Delete Button (Mở Modal) */}
                     <button 
                         onClick={() => setShowDeleteModal(true)}
                         className="flex-1 flex items-center justify-center gap-2 bg-red-50 border border-red-100 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 hover:border-red-200 transition"
@@ -173,10 +167,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </main>
 
-      {/* --- DELETE CONFIRMATION MODAL --- */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
-          {/* Overlay (Nền tối) */}
           <div 
             className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
             onClick={() => setShowDeleteModal(false)}
