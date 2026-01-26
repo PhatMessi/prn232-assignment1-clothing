@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Cột 1: Thông tin */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-white">MINIMAL</h3>
+            <h3 className="text-xl font-bold text-white">Shopping</h3>
             <p className="text-sm text-gray-400">
               Sustainable materials, timeless designs. The new standard in everyday wear.
             </p>
@@ -49,7 +49,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} Minimal Store. All rights reserved.
+          © {new Date().getFullYear()} Clothing Store. All rights reserved.
         </div>
       </div>
     </footer>

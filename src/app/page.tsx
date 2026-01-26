@@ -64,7 +64,7 @@ export default async function Home({
                FALL COLLECTION 2026
              </span>
              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
-               Curated <br/> Minimalism.
+               Shop <br/> Clothing.
              </h1>
              <p className="text-gray-300 max-w-lg mx-auto mb-8 text-lg">
                Sustainable materials, timeless designs. Discover the new standard in everyday wear.

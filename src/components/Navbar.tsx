@@ -32,7 +32,7 @@ function NavbarContent() {
             <div className="w-6 h-6 bg-blue-600 rounded-sm transform rotate-45 flex items-center justify-center">
                <div className="w-2 h-2 bg-white transform -rotate-45"></div>
             </div>
-            <span className="font-bold text-xl tracking-tight text-gray-900">MINIMAL</span>
+            <span className="font-bold text-xl tracking-tight text-gray-900">Clothing Store</span>
           </Link>
 
           {/* Search Bar (Giả lập theo design) */}
