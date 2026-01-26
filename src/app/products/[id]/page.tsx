@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Edit, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Edit, Trash2, ShoppingBag, ArrowLeft, AlertTriangle, X } from "lucide-react";
 
 // Định nghĩa kiểu dữ liệu cho sản phẩm
 interface Product {
@@ -14,6 +14,8 @@ interface Product {
   description: string;
   price: number;
   image: string | null;
+  category?: string;
+  stock?: number;
 }
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
@@ -21,8 +23,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  
+  // State điều khiển Hộp thoại xác nhận xóa
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // 1. Lấy dữ liệu sản phẩm khi vào trang
+  // 1. Lấy dữ liệu sản phẩm
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -32,7 +37,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         setProduct(data);
       } catch (error) {
         console.error(error);
-        router.push("/404"); // Nếu lỗi thì chuyển hướng (cần tạo trang 404 sau nếu muốn)
+        router.push("/404");
       } finally {
         setLoading(false);
       }
@@ -40,10 +45,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     fetchProduct();
   }, [params.id, router]);
 
-  // 2. Hàm xử lý Xóa sản phẩm
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-    
+  // 2. Hàm Xóa sản phẩm (Gọi khi bấm Confirm trong Modal)
+  const confirmDelete = async () => {
     setDeleting(true);
     try {
       const res = await fetch(`/api/products/${params.id}`, {
@@ -51,8 +54,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       });
 
       if (res.ok) {
-        alert("Product deleted successfully!");
-        router.push("/"); // Xóa xong về trang chủ
+        // Xóa thành công => Đóng modal & chuyển hướng
+        setShowDeleteModal(false); 
+        router.push("/"); 
         router.refresh();
       } else {
         alert("Failed to delete product");
@@ -68,11 +72,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900">
+    <div className="min-h-screen bg-white font-sans text-gray-900 relative">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Breadcrumb / Back button */}
+        {/* Breadcrumb */}
         <div className="mb-8">
             <Link href="/" className="flex items-center text-sm text-gray-500 hover:text-gray-900 transition-colors">
                 <ArrowLeft className="w-4 h-4 mr-1" />
@@ -83,10 +87,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
           {/* LEFT: IMAGE */}
           <div className="relative aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden">
-             {/* Badge */}
              <div className="absolute top-4 left-4 z-10">
                 <span className="bg-white/90 backdrop-blur px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-sm">
-                    New Arrival
+                    {product.category || "New Arrival"}
                 </span>
              </div>
              <Image
@@ -108,7 +111,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             
             <div className="flex items-center gap-4 mb-6">
                 <span className="text-2xl font-medium text-gray-900">${product.price}</span>
-                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">In Stock</span>
+                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                    In Stock: {product.stock || 0}
+                </span>
             </div>
 
             <div className="prose prose-sm text-gray-500 mb-8">
@@ -123,11 +128,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <button className="w-8 h-8 rounded-full bg-gray-700 border-2 border-transparent hover:scale-110 transition"></button>
                     <button className="w-8 h-8 rounded-full bg-yellow-700 border-2 border-transparent hover:scale-110 transition"></button>
                 </div>
-
-                <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Size</h3>
-                    <button className="text-xs text-blue-600 underline">Size Guide</button>
-                </div>
+                <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">Size</h3>
                 <div className="grid grid-cols-4 gap-3">
                     {['S', 'M', 'L', 'XL'].map((size) => (
                         <button key={size} className="py-3 border border-gray-200 rounded-lg text-sm font-medium hover:border-black hover:bg-gray-50 transition">
@@ -157,24 +158,69 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         Edit Product
                     </Link>
 
-                    {/* Delete Button */}
+                    {/* Delete Button (Mở Modal) */}
                     <button 
-                        onClick={handleDelete}
-                        disabled={deleting}
+                        onClick={() => setShowDeleteModal(true)}
                         className="flex-1 flex items-center justify-center gap-2 bg-red-50 border border-red-100 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 hover:border-red-200 transition"
                     >
                         <Trash2 className="w-4 h-4" />
-                        {deleting ? "Deleting..." : "Delete Item"}
+                        Delete Item
                     </button>
                 </div>
-                <p className="text-[10px] text-gray-400 mt-3 text-center">
-                    Last updated by Admin on {new Date(product.id).toLocaleDateString()}
-                </p>
             </div>
 
           </div>
         </div>
       </main>
+
+      {/* --- DELETE CONFIRMATION MODAL --- */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
+          {/* Overlay (Nền tối) */}
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowDeleteModal(false)}
+          ></div>
+
+          {/* Modal Box */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 transform transition-all scale-100">
+            {/* Close Icon */}
+            <button 
+                onClick={() => setShowDeleteModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+                <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-600">
+                    <AlertTriangle className="w-6 h-6" />
+                </div>
+                
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Product?</h3>
+                <p className="text-sm text-gray-500 mb-6">
+                    Are you sure you want to delete <span className="font-semibold text-gray-800">"{product.name}"</span>? This action cannot be undone.
+                </p>
+
+                <div className="flex gap-3 w-full">
+                    <button 
+                        onClick={() => setShowDeleteModal(false)}
+                        className="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        onClick={confirmDelete}
+                        disabled={deleting}
+                        className="flex-1 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 shadow-md shadow-red-200 transition disabled:opacity-70 flex items-center justify-center gap-2"
+                    >
+                        {deleting ? "Deleting..." : "Delete"}
+                    </button>
+                </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

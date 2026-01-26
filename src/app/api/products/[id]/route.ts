@@ -46,12 +46,23 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     const id = parseInt(params.id);
+    
+    // Kiểm tra xem sản phẩm có tồn tại không trước khi xóa
+    const existingProduct = await prisma.product.findUnique({
+        where: { id }
+    });
+
+    if (!existingProduct) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
     await prisma.product.delete({
       where: { id },
     });
 
     return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error) {
+    console.error("Delete Error:", error);
     return NextResponse.json({ error: 'Error deleting product' }, { status: 500 });
   }
 }
