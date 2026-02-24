@@ -3,17 +3,49 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Hoặc mysql/sqlite tùy bạn đang dùng
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   
+  name      String?
+  role      String   @default("USER") 
+  orders    Order[]  
+  createdAt DateTime @default(now())
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String
   price       Float
   image       String?
-  category    String   @default("General") 
-  stock       Int      @default(0)         
-  createdAt   DateTime @default(now())
+  category    String      @default("General")
+  stock       Int         @default(0)
+  orderItems  OrderItem[] 
+  createdAt   DateTime    @default(now())
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  totalAmount Float
+  status      String      @default("PENDING") 
+  items       OrderItem[] 
+  createdAt   DateTime    @default(now())
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float   
 }
