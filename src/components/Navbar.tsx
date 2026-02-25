@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { ShoppingBag, Search, Plus, LogOut, User as UserIcon } from "lucide-react";
+// Bổ sung thêm icon Package
+import { ShoppingBag, Search, Plus, LogOut, User as UserIcon, Package } from "lucide-react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Suspense, useEffect, useState } from "react";
@@ -45,7 +46,7 @@ function NavbarContent() {
   }, 300);
 
   return (
-    <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
+    <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center gap-2">
@@ -73,12 +74,19 @@ function NavbarContent() {
           </div>
 
           {/* Right Menu */}
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium text-gray-700 hover:text-black">Shop</Link>
+          <div className="flex items-center gap-5">
+            <Link href="/" className="text-sm font-medium text-gray-700 hover:text-[#137fec] transition-colors">Shop</Link>
             
             {/* Phân quyền hiển thị (Authorization) */}
             {user ? (
               <>
+                {/* NÚT XEM LỊCH SỬ ĐƠN HÀNG */}
+                <Link href="/orders" className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#137fec] transition-colors">
+                    <Package className="w-4 h-4" /> 
+                    Orders
+                </Link>
+
+                {/* Nút Add Product */}
                 <Link href="/products/create">
                     <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
                     <Plus className="w-4 h-4" />
@@ -103,8 +111,8 @@ function NavbarContent() {
               </Link>
             )}
 
-            {/* Chỗ Icon Giỏ Hàng thay thế bằng khối này */}
-            <Link href="/cart" className="p-2 text-gray-400 hover:text-gray-500 relative cursor-pointer">
+            {/* Giỏ Hàng */}
+            <Link href="/cart" className="p-2 text-gray-400 hover:text-[#137fec] relative cursor-pointer transition-colors">
                <ShoppingBag className="w-6 h-6" />
                {cartCount > 0 && (
                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold ring-2 ring-white">
@@ -122,7 +130,7 @@ function NavbarContent() {
 export default function Navbar() {
   return (
     <Suspense fallback={
-      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 h-16" />
+      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 h-16 shadow-sm" />
     }>
       <NavbarContent />
     </Suspense>
