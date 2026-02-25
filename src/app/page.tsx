@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface Product {
   id: number;
@@ -15,25 +16,16 @@ interface Product {
 
 const ITEMS_PER_PAGE = 8;
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: {
-    search?: string;
-    page?: string;
-  };
-}) {
+export default async function Home({ searchParams }: { searchParams?: { search?: string; page?: string; }; }) {
   const query = searchParams?.search || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const where = query
-    ? {
-        OR: [
-          { name: { contains: query, mode: "insensitive" } }, 
-          { description: { contains: query, mode: "insensitive" } }, 
-        ],
-      }
-    : {};
+  const where = query ? {
+    OR: [
+      { name: { contains: query, mode: "insensitive" } }, 
+      { description: { contains: query, mode: "insensitive" } }, 
+    ],
+  } : {};
 
   const [products, totalCount] = await Promise.all([
     prisma.product.findMany({
@@ -58,9 +50,7 @@ export default async function Home({
              <span className="inline-block py-1 px-3 rounded-full bg-gray-800/80 text-xs font-semibold text-gray-200 mb-4 border border-gray-700">
                SPRING COLLECTION 2026
              </span>
-             <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
-               Shop <br/> Clothing.
-             </h1>
+             <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">Shop <br/> Clothing.</h1>
              <p className="text-gray-300 max-w-lg mx-auto mb-8 text-lg">
                Sustainable materials, timeless designs. Discover the new standard in everyday wear.
              </p>
@@ -81,48 +71,47 @@ export default async function Home({
             <h2 className="text-3xl font-bold text-gray-900">
                 {query ? `Search results for "${query}"` : "New Arrivals"}
             </h2>
-            <p className="text-gray-500 mt-1">
-                Showing {products.length} of {totalCount} products
-            </p>
+            <p className="text-gray-500 mt-1">Showing {products.length} of {totalCount} products</p>
           </div>
-          
         </div>
 
         {products.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-lg">
             <p className="text-gray-500">No products found.</p>
             {query && (
-                <Link href="/" className="text-blue-600 hover:underline mt-2 inline-block">
-                    Clear search
-                </Link>
+                <Link href="/" className="text-blue-600 hover:underline mt-2 inline-block">Clear search</Link>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
             {products.map((product: Product) => (
-              <Link href={`/products/${product.id}`} key={product.id} className="group">
-                <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100 relative">
+              <div key={product.id} className="group relative block">
+                {/* Phần Hình ảnh */}
+                <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100 relative block">
                    <div className="absolute top-2 left-2 z-10">
                       <span className="bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded-sm">New</span>
                    </div>
-                   
-                   <Image
-                     src={product.image || "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=80"}
-                     alt={product.name}
-                     fill
-                     className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                   />
+                   <Link href={`/products/${product.id}`}>
+                     <Image
+                       src={product.image || "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=80"}
+                       alt={product.name}
+                       fill
+                       className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                     />
+                   </Link>
+                   {/* Nhúng nút AddToCart thả nổi trên ảnh */}
+                   <AddToCartButton product={product} />
                 </div>
-                <div className="mt-4 flex justify-between">
+                
+                {/* Phần Text */}
+                <Link href={`/products/${product.id}`} className="mt-4 flex justify-between block">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 truncate w-40">
-                        {product.name}
-                    </h3>
+                    <h3 className="text-sm font-medium text-gray-900 truncate w-40">{product.name}</h3>
                     <p className="mt-1 text-sm text-gray-500">Classic Fit</p>
                   </div>
                   <p className="text-sm font-medium text-gray-900">${product.price}</p>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </div>
         )}
@@ -130,27 +119,15 @@ export default async function Home({
         {totalPages > 1 && (
             <div className="mt-12 flex justify-center gap-2">
                 {currentPage > 1 ? (
-                    <Link href={`/?page=${currentPage - 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100">
-                        <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    <Link href={`/?page=${currentPage - 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100"><ChevronLeft className="w-5 h-5" /></Link>
                 ) : (
-                    <button disabled className="p-2 border rounded text-gray-300 cursor-not-allowed">
-                         <ChevronLeft className="w-5 h-5" />
-                    </button>
+                    <button disabled className="p-2 border rounded text-gray-300 cursor-not-allowed"><ChevronLeft className="w-5 h-5" /></button>
                 )}
-
-                <span className="px-4 py-2 border rounded bg-gray-50 font-medium text-sm flex items-center">
-                    Page {currentPage} of {totalPages}
-                </span>
-
+                <span className="px-4 py-2 border rounded bg-gray-50 font-medium text-sm flex items-center">Page {currentPage} of {totalPages}</span>
                 {currentPage < totalPages ? (
-                     <Link href={`/?page=${currentPage + 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100">
-                        <ChevronRight className="w-5 h-5" />
-                    </Link>
+                     <Link href={`/?page=${currentPage + 1}${query ? `&search=${query}` : ''}`} className="p-2 border rounded hover:bg-gray-100"><ChevronRight className="w-5 h-5" /></Link>
                 ) : (
-                    <button disabled className="p-2 border rounded text-gray-300 cursor-not-allowed">
-                         <ChevronRight className="w-5 h-5" />
-                    </button>
+                    <button disabled className="p-2 border rounded text-gray-300 cursor-not-allowed"><ChevronRight className="w-5 h-5" /></button>
                 )}
             </div>
         )}
