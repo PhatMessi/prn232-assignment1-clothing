@@ -6,13 +6,16 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import { ChevronRight, CreditCard, Lock, HelpCircle } from "lucide-react";
+import { ChevronRight, CreditCard, Lock, HelpCircle, CheckCircle } from "lucide-react";
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, cartCount, clearCart } = useCart();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  
+  // State quản lý việc hiển thị modal thành công
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const shipping = cartCount > 0 ? 12.00 : 0;
   const tax = cartTotal * 0.1;
@@ -40,8 +43,8 @@ export default function CheckoutPage() {
 
       if (res.ok) {
         clearCart(); 
-        alert("🎉 Đặt hàng thành công!");
-        router.push("/orders"); 
+        // Hiển thị modal thay vì alert
+        setShowSuccessModal(true);
       } else {
         const data = await res.json();
         setError(data.error || "Có lỗi xảy ra khi đặt hàng.");
@@ -53,17 +56,17 @@ export default function CheckoutPage() {
     }
   };
 
-  if (cartCount === 0 && !isSubmitting) {
+  if (cartCount === 0 && !isSubmitting && !showSuccessModal) {
     return (
       <div className="min-h-screen bg-[#f6f7f8] flex flex-col items-center justify-center">
-        <h2 className="text-2xl font-bold mb-4">Giỏ hàng của bạn đang trống</h2>
-        <Link href="/" className="text-[#137fec] hover:underline">Quay lại mua sắm</Link>
+        <h2 className="text-2xl font-bold mb-4 text-slate-900">Giỏ hàng của bạn đang trống</h2>
+        <Link href="/" className="text-[#137fec] font-medium hover:underline">Quay lại mua sắm</Link>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f6f7f8] font-sans text-slate-900 min-h-screen flex flex-col">
+    <div className="bg-[#f6f7f8] font-sans text-slate-900 min-h-screen flex flex-col relative">
       <Navbar />
 
       <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -98,29 +101,29 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <label className="flex flex-col gap-1.5">
                       <span className="text-sm font-medium text-slate-700">First Name</span>
-                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="Jane" type="text" />
+                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="Jane" type="text" />
                     </label>
                     <label className="flex flex-col gap-1.5">
                       <span className="text-sm font-medium text-slate-700">Last Name</span>
-                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="Doe" type="text" />
+                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="Doe" type="text" />
                     </label>
                   </div>
                   <label className="flex flex-col gap-1.5">
                     <span className="text-sm font-medium text-slate-700">Email Address</span>
-                    <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="jane@example.com" type="email" />
+                    <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="jane@example.com" type="email" />
                   </label>
                   <label className="flex flex-col gap-1.5">
                     <span className="text-sm font-medium text-slate-700">Street Address</span>
-                    <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="123 Fashion St" type="text" />
+                    <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="123 Fashion St" type="text" />
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     <label className="flex flex-col gap-1.5 sm:col-span-1">
                       <span className="text-sm font-medium text-slate-700">City</span>
-                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="New York" type="text" />
+                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="New York" type="text" />
                     </label>
                     <label className="flex flex-col gap-1.5 sm:col-span-1">
                       <span className="text-sm font-medium text-slate-700">State / Province</span>
-                      <select required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4">
+                      <select required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none cursor-pointer">
                         <option value="">Select State</option>
                         <option value="NY">NY</option>
                         <option value="CA">CA</option>
@@ -129,7 +132,7 @@ export default function CheckoutPage() {
                     </label>
                     <label className="flex flex-col gap-1.5 sm:col-span-1">
                       <span className="text-sm font-medium text-slate-700">Zip Code</span>
-                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="10001" type="text" />
+                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="10001" type="text" />
                     </label>
                   </div>
                 </div>
@@ -150,33 +153,33 @@ export default function CheckoutPage() {
                 <div className="space-y-6">
                   <div className="flex p-1 bg-slate-100 rounded-lg">
                     <button type="button" className="flex-1 py-2.5 text-sm font-semibold rounded-md shadow-sm bg-white text-[#137fec] text-center">Credit Card</button>
-                    <button type="button" className="flex-1 py-2.5 text-sm font-medium rounded-md text-slate-500 hover:text-slate-700 text-center">PayPal</button>
+                    <button type="button" className="flex-1 py-2.5 text-sm font-medium rounded-md text-slate-500 hover:text-slate-700 text-center transition-colors">PayPal</button>
                   </div>
 
                   <div className="space-y-5">
                     <label className="flex flex-col gap-1.5">
                       <span className="text-sm font-medium text-slate-700">Card Number</span>
                       <div className="relative">
-                        <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 pl-12 pr-4" placeholder="0000 0000 0000 0000" type="text" />
+                        <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 pl-12 pr-4 outline-none" placeholder="0000 0000 0000 0000" type="text" />
                         <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                       </div>
                     </label>
                     <div className="grid grid-cols-2 gap-5">
                       <label className="flex flex-col gap-1.5">
                         <span className="text-sm font-medium text-slate-700">Expiration Date</span>
-                        <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="MM / YY" type="text" />
+                        <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="MM / YY" type="text" />
                       </label>
                       <label className="flex flex-col gap-1.5">
                         <span className="text-sm font-medium text-slate-700">CVC</span>
                         <div className="relative">
-                          <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="123" type="text" />
+                          <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="123" type="text" />
                           <HelpCircle className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 cursor-help" />
                         </div>
                       </label>
                     </div>
                     <label className="flex flex-col gap-1.5">
                       <span className="text-sm font-medium text-slate-700">Cardholder Name</span>
-                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4" placeholder="Name on card" type="text" />
+                      <input required className="w-full rounded-lg border-slate-300 bg-white focus:border-[#137fec] focus:ring-[#137fec] h-12 px-4 outline-none" placeholder="Name on card" type="text" />
                     </label>
                   </div>
                 </div>
@@ -234,7 +237,7 @@ export default function CheckoutPage() {
                   type="submit" 
                   form="checkout-form"
                   disabled={isSubmitting}
-                  className="w-full mt-8 flex items-center justify-center rounded-lg bg-[#137fec] py-4 px-6 text-base font-bold text-white shadow-md hover:bg-blue-600 transition-all disabled:bg-gray-400"
+                  className="w-full mt-8 flex items-center justify-center rounded-xl bg-[#137fec] py-4 px-6 text-base font-bold text-white shadow-md hover:bg-blue-600 transition-all disabled:bg-gray-400"
                 >
                   {isSubmitting ? "Processing..." : "Place Order"}
                 </button>
@@ -248,6 +251,37 @@ export default function CheckoutPage() {
 
         </div>
       </main>
+
+      {/* --- MODAL THÔNG BÁO THÀNH CÔNG --- */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all p-8 text-center flex flex-col items-center animate-in fade-in zoom-in duration-300">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-5">
+              <CheckCircle className="w-10 h-10 text-green-500" />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">Đặt hàng thành công!</h3>
+            <p className="text-slate-500 mb-8 px-4 leading-relaxed">
+              Cảm ơn bạn đã mua sắm. Đơn hàng của bạn đã được lưu vào hệ thống và đang trong quá trình xử lý.
+            </p>
+            
+            <div className="flex flex-col gap-3 w-full">
+              <button 
+                onClick={() => router.push('/orders')}
+                className="w-full py-3.5 px-4 bg-[#137fec] hover:bg-blue-600 text-white rounded-xl font-bold transition-colors shadow-sm"
+              >
+                Xem lịch sử đơn hàng
+              </button>
+              <button 
+                onClick={() => router.push('/')}
+                className="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors"
+              >
+                Tiếp tục mua sắm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
