@@ -14,7 +14,6 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   
-  // State quản lý việc hiển thị modal thành công
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const shipping = cartCount > 0 ? 12.00 : 0;
@@ -43,7 +42,6 @@ export default function CheckoutPage() {
 
       if (res.ok) {
         clearCart(); 
-        // Hiển thị modal thay vì alert
         setShowSuccessModal(true);
       } else {
         const data = await res.json();
@@ -252,7 +250,6 @@ export default function CheckoutPage() {
         </div>
       </main>
 
-      {/* --- MODAL THÔNG BÁO THÀNH CÔNG --- */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all p-8 text-center flex flex-col items-center animate-in fade-in zoom-in duration-300">
