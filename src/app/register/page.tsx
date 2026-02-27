@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, EyeOff, User } from "lucide-react"; // Thêm icon User cho trường Họ Tên
+import { Mail, Lock, EyeOff, User } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -36,7 +36,6 @@ export default function RegisterPage() {
   return (
     <main className="flex-1 flex items-center justify-center p-4 py-12 md:py-20 bg-[#f6f7f8] min-h-screen">
       <div className="flex flex-col w-full max-w-[480px]">
-        {/* Header Section */}
         <div className="text-center mb-8">
           <h1 className="text-slate-900 tracking-tight text-[32px] font-bold leading-tight mb-3">Create an Account</h1>
           <p className="text-slate-500 text-base font-normal leading-normal">
@@ -44,7 +43,6 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Toggle Switch */}
         <div className="flex justify-center mb-8">
           <div className="flex h-12 w-full items-center justify-center rounded-lg bg-slate-200 p-1">
             <label 
@@ -61,17 +59,14 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Hiển thị lỗi nếu có */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-500 rounded-lg text-sm text-center border border-red-100">
             {error}
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleRegister} className="flex flex-col gap-5 bg-white p-6 rounded-xl shadow-sm border border-slate-100">
           
-          {/* Full Name Field */}
           <label className="flex flex-col gap-2">
             <span className="text-slate-900 text-sm font-medium leading-normal">Full Name</span>
             <div className="relative">
@@ -86,7 +81,6 @@ export default function RegisterPage() {
             </div>
           </label>
 
-          {/* Email Field */}
           <label className="flex flex-col gap-2">
             <span className="text-slate-900 text-sm font-medium leading-normal">Email Address</span>
             <div className="relative">
@@ -101,7 +95,6 @@ export default function RegisterPage() {
             </div>
           </label>
 
-          {/* Password Field */}
           <label className="flex flex-col gap-2">
             <span className="text-slate-900 text-sm font-medium leading-normal">Password</span>
             <div className="relative">
@@ -120,7 +113,6 @@ export default function RegisterPage() {
             </div>
           </label>
 
-          {/* Submit Button */}
           <button
             disabled={isLoading}
             type="submit"
@@ -129,14 +121,12 @@ export default function RegisterPage() {
             <span className="truncate">{isLoading ? "Creating Account..." : "Sign Up"}</span>
           </button>
 
-          {/* Social Login Divider */}
           <div className="relative flex py-2 items-center">
             <div className="flex-grow border-t border-slate-200"></div>
             <span className="flex-shrink mx-4 text-slate-400 text-xs uppercase">Or sign up with</span>
             <div className="flex-grow border-t border-slate-200"></div>
           </div>
 
-          {/* Social Buttons */}
           <div className="grid grid-cols-2 gap-3">
             <button type="button" className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white h-10 hover:bg-slate-50 transition-colors">
               <span className="text-slate-900 text-sm font-medium">Google</span>

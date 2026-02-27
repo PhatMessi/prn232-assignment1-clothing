@@ -73,7 +73,6 @@ export default function CreateProductPage() {
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
             <div className="space-y-6">
               
-              {/* Product Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
                 <input
@@ -86,7 +85,6 @@ export default function CreateProductPage() {
                 />
               </div>
 
-              {/* Row: Price & Stock */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
@@ -112,7 +110,6 @@ export default function CreateProductPage() {
                 </div>
               </div>
 
-              {/* Category */}
               <div>
                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                  <div className="relative">
@@ -133,7 +130,6 @@ export default function CreateProductPage() {
                  </div>
               </div>
 
-              {/* Image URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                 <div className="flex gap-2">
@@ -151,7 +147,6 @@ export default function CreateProductPage() {
                 </div>
               </div>
 
-              {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                 <textarea

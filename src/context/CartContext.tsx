@@ -25,7 +25,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Lấy dữ liệu giỏ hàng từ LocalStorage khi trang vừa load
   useEffect(() => {
     setIsMounted(true);
     const savedCart = localStorage.getItem("cart");
@@ -34,7 +33,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Lưu vào LocalStorage mỗi khi giỏ hàng thay đổi
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem("cart", JSON.stringify(cartItems));

@@ -9,9 +9,8 @@ export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart();
   const router = useRouter();
 
-  // Tính toán tiền
   const shipping = cartCount > 0 ? 12.00 : 0;
-  const tax = cartTotal * 0.1; // Thuế 10%
+  const tax = cartTotal * 0.1; 
   const finalTotal = cartTotal + shipping + tax;
 
   return (
@@ -21,7 +20,6 @@ export default function CartPage() {
       <main className="flex-1 px-4 md:px-10 py-8 flex justify-center">
         <div className="w-full max-w-[1200px] flex flex-col lg:flex-row gap-8">
           
-          {/* Cột Trái: Danh sách sản phẩm */}
           <div className="flex-1 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <h1 className="text-slate-900 text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Your Cart</h1>
@@ -82,7 +80,6 @@ export default function CartPage() {
             </Link>
           </div>
 
-          {/* Cột Phải: Tổng hóa đơn */}
           <div className="lg:w-[380px] shrink-0">
             <div className="sticky top-24 flex flex-col gap-4 bg-white p-6 rounded-xl shadow-lg border border-slate-100">
               <h2 className="text-slate-900 text-xl font-bold">Order Summary</h2>

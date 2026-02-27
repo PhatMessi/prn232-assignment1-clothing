@@ -14,7 +14,6 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Tính toán tiền (giống hệt trang Cart)
   const shipping = cartCount > 0 ? 12.00 : 0;
   const tax = cartTotal * 0.1;
   const finalTotal = cartTotal + shipping + tax;
@@ -40,9 +39,9 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        clearCart(); // Xóa giỏ hàng
+        clearCart(); 
         alert("🎉 Đặt hàng thành công!");
-        router.push("/orders"); // Chuyển sang trang Lịch sử đơn hàng
+        router.push("/orders"); 
       } else {
         const data = await res.json();
         setError(data.error || "Có lỗi xảy ra khi đặt hàng.");
@@ -54,7 +53,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Nếu giỏ hàng trống, không cho vào trang checkout
   if (cartCount === 0 && !isSubmitting) {
     return (
       <div className="min-h-screen bg-[#f6f7f8] flex flex-col items-center justify-center">
@@ -86,11 +84,9 @@ export default function CheckoutPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
-          {/* Cột trái: Form thông tin */}
           <div className="lg:col-span-7 flex flex-col gap-10">
             <form id="checkout-form" onSubmit={handlePlaceOrder} className="space-y-10">
               
-              {/* Shipping Address Section */}
               <section aria-labelledby="shipping-heading">
                 <div className="flex items-center justify-between mb-6 border-b border-slate-200 pb-4">
                   <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3">
@@ -139,7 +135,6 @@ export default function CheckoutPage() {
                 </div>
               </section>
 
-              {/* Payment Information Section (Giao diện giả lập thanh toán) */}
               <section aria-labelledby="payment-heading">
                 <div className="flex items-center justify-between mb-6 border-b border-slate-200 pb-4">
                   <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3">
@@ -189,13 +184,11 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* Cột phải: Order Summary */}
           <div className="lg:col-span-5 w-full">
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 sticky top-28 overflow-hidden">
               <div className="p-6 md:p-8">
                 <h2 className="text-xl font-bold text-slate-900 mb-6">Order Summary</h2>
                 
-                {/* Cart Items List */}
                 <div className="space-y-6 mb-8 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex gap-4">

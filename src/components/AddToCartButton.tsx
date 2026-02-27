@@ -15,7 +15,7 @@ export default function AddToCartButton({ product }: Props) {
   const { addToCart } = useCart();
 
   const handleAdd = (e: React.MouseEvent) => {
-    e.preventDefault(); // Ngăn việc bị nhảy trang khi bấm nút
+    e.preventDefault();
     e.stopPropagation();
     
     addToCart({
@@ -26,7 +26,6 @@ export default function AddToCartButton({ product }: Props) {
       quantity: 1,
     });
     
-    // Hiển thị thông báo nhỏ
     alert(`Đã thêm ${product.name} vào giỏ hàng!`);
   };
 

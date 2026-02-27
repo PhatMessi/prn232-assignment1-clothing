@@ -65,7 +65,6 @@ export default async function Home({ searchParams }: { searchParams?: { search?:
           </div>
         </div>
 
-        {/* SECTION TITLE */}
         <div className="mt-16 flex flex-col md:flex-row justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">
@@ -86,7 +85,6 @@ export default async function Home({ searchParams }: { searchParams?: { search?:
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
             {products.map((product: Product) => (
               <div key={product.id} className="group relative block">
-                {/* Phần Hình ảnh */}
                 <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100 relative block">
                    <div className="absolute top-2 left-2 z-10">
                       <span className="bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded-sm">New</span>
@@ -99,11 +97,9 @@ export default async function Home({ searchParams }: { searchParams?: { search?:
                        className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
                      />
                    </Link>
-                   {/* Nhúng nút AddToCart thả nổi trên ảnh */}
                    <AddToCartButton product={product} />
                 </div>
                 
-                {/* Phần Text */}
                 <Link href={`/products/${product.id}`} className="mt-4 flex justify-between block">
                   <div>
                     <h3 className="text-sm font-medium text-gray-900 truncate w-40">{product.name}</h3>

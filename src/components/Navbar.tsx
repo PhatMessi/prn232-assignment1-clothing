@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-// Bổ sung thêm icon Package
 import { ShoppingBag, Search, Plus, LogOut, User as UserIcon, Package } from "lucide-react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
@@ -13,10 +12,8 @@ function NavbarContent() {
   const pathname = usePathname();
   const { replace, push, refresh } = useRouter();
   
-  // State lưu thông tin người dùng đang đăng nhập
   const [user, setUser] = useState<any>(null);
 
-  // Gọi API /api/auth/me để kiểm tra lúc load trang
   useEffect(() => {
     fetch('/api/auth/me')
       .then(res => res.json())
@@ -25,7 +22,6 @@ function NavbarContent() {
       });
   }, []);
 
-  // Hàm xử lý đăng xuất
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     setUser(null);
@@ -73,20 +69,16 @@ function NavbarContent() {
             </div>
           </div>
 
-          {/* Right Menu */}
           <div className="flex items-center gap-5">
             <Link href="/" className="text-sm font-medium text-gray-700 hover:text-[#137fec] transition-colors">Shop</Link>
             
-            {/* Phân quyền hiển thị (Authorization) */}
             {user ? (
               <>
-                {/* NÚT XEM LỊCH SỬ ĐƠN HÀNG */}
                 <Link href="/orders" className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#137fec] transition-colors">
                     <Package className="w-4 h-4" /> 
                     Orders
                 </Link>
 
-                {/* Nút Add Product */}
                 <Link href="/products/create">
                     <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
                     <Plus className="w-4 h-4" />
@@ -94,7 +86,6 @@ function NavbarContent() {
                     </button>
                 </Link>
                 
-                {/* User info & Logout */}
                 <div className="flex items-center gap-3 border-l pl-4 border-gray-200">
                   <span className="text-sm font-medium text-gray-700 flex items-center gap-1">
                     <UserIcon className="w-4 h-4"/> 
@@ -111,7 +102,6 @@ function NavbarContent() {
               </Link>
             )}
 
-            {/* Giỏ Hàng */}
             <Link href="/cart" className="p-2 text-gray-400 hover:text-[#137fec] relative cursor-pointer transition-colors">
                <ShoppingBag className="w-6 h-6" />
                {cartCount > 0 && (

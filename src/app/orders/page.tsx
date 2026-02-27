@@ -10,14 +10,12 @@ import {
   Settings, LogOut, ChevronRight, ChevronLeft, Download
 } from "lucide-react";
 
-// Server Component: Lấy dữ liệu trực tiếp từ Database
 export default async function OrdersPage() {
-  // 1. Kiểm tra đăng nhập
   const cookieStore = cookies();
   const token = cookieStore.get('token')?.value;
 
   if (!token) {
-    redirect('/login'); // Chưa đăng nhập thì đuổi về trang login
+    redirect('/login'); 
   }
 
   let user;
@@ -27,18 +25,16 @@ export default async function OrdersPage() {
     redirect('/login');
   }
 
-  // 2. Lấy danh sách đơn hàng của User này từ Database
   const orders = await prisma.order.findMany({
     where: { userId: user.userId },
     include: {
       items: {
-        include: { product: true } // Lấy luôn thông tin sản phẩm trong từng order item
+        include: { product: true } 
       }
     },
     orderBy: { createdAt: 'desc' }
   });
 
-  // Hàm format ngày giờ
   const formatDate = (date: Date) => new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).format(date);
   const formatTime = (date: Date) => new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(date);
 
@@ -48,7 +44,6 @@ export default async function OrdersPage() {
       
       <main className="flex-grow flex flex-col md:flex-row max-w-[1440px] mx-auto w-full p-4 md:p-8 gap-8">
         
-        {/* Sidebar Navigation */}
         <aside className="w-full md:w-64 flex-shrink-0 flex flex-col gap-6">
           <div className="flex items-center gap-4 p-4 rounded-xl bg-white border border-[#e2e8f0] shadow-sm">
             <div className="h-12 w-12 rounded-full bg-[#137fec] text-white flex items-center justify-center font-bold text-xl uppercase">
@@ -96,7 +91,6 @@ export default async function OrdersPage() {
           </div>
         </aside>
 
-        {/* Main Content Area */}
         <section className="flex-1 flex flex-col gap-6 min-w-0">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -115,7 +109,6 @@ export default async function OrdersPage() {
             <button className="px-4 py-2 rounded-lg bg-white text-[#475569] border border-[#e2e8f0] hover:border-[#137fec] text-sm font-medium transition-all">Delivered</button>
           </div>
 
-          {/* Orders Table */}
           <div className="rounded-xl border border-[#e2e8f0] bg-white shadow-sm overflow-hidden flex flex-col">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">

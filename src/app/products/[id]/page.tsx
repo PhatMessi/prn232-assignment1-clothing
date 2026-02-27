@@ -24,17 +24,15 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [user, setUser] = useState<any>(null); // State kiểm tra đăng nhập
+  const [user, setUser] = useState<any>(null); 
   
-  const { addToCart } = useCart(); // Lấy hàm giỏ hàng
+  const { addToCart } = useCart(); 
 
   useEffect(() => {
-    // Kéo thông tin user
     fetch('/api/auth/me').then(res => res.json()).then(data => {
       if (data.user) setUser(data.user);
     });
 
-    // Kéo thông tin sản phẩm
     const fetchProduct = async () => {
       try {
         const res = await fetch(`/api/products/${params.id}`);
@@ -96,7 +94,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-          {/* Hình ảnh */}
           <div className="relative aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden">
              <div className="absolute top-4 left-4 z-10">
                 <span className="bg-white/90 backdrop-blur px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-sm">
@@ -112,7 +109,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
              />
           </div>
 
-          {/* Chi tiết */}
           <div className="flex flex-col">
             <div className="mb-2">
                 <span className="text-sm text-gray-500 font-medium">LuxeWear Collection</span>
@@ -131,7 +127,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <p>{product.description}</p>
             </div>
 
-            {/* Màu & Size */}
             <div className="mb-8">
                 <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">Color</h3>
                 <div className="flex gap-3 mb-6">
@@ -149,7 +144,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </div>
             </div>
 
-            {/* Nút Đặt hàng */}
             <button 
               onClick={handleAddToCart}
               className="w-full bg-[#137fec] text-white py-4 rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 mb-8 shadow-lg shadow-blue-200"
@@ -157,7 +151,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <ShoppingBag className="w-5 h-5" /> Add to Cart
             </button>
 
-            {/* Nút Admin Actions (Chỉ hiển thị khi đã đăng nhập) */}
             {user && (
               <div className="mt-auto border border-dashed border-gray-300 bg-gray-50 rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-4">
@@ -184,7 +177,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </main>
 
-      {/* Modal Xóa Sản phẩm (Giữ nguyên của bạn) */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setShowDeleteModal(false)}></div>

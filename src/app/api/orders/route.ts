@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'prn232_assignment2_secret_key_2026
 
 export async function POST(request: Request) {
   try {
-    // 1. Kiểm tra xem người dùng đã đăng nhập chưa
     const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
@@ -15,7 +14,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Vui lòng đăng nhập để tiến hành đặt hàng!' }, { status: 401 });
     }
 
-    // Giải mã token để lấy ID của user
     let userId;
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
@@ -24,7 +22,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Phiên đăng nhập không hợp lệ!' }, { status: 401 });
     }
 
-    // 2. Lấy dữ liệu giỏ hàng từ Frontend gửi lên
     const body = await request.json();
     const { cartItems, totalAmount } = body;
 
@@ -32,17 +29,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Giỏ hàng của bạn đang trống' }, { status: 400 });
     }
 
-    // 3. Lưu đơn hàng vào Database (Dùng Transaction để đảm bảo tính toàn vẹn)
     const order = await prisma.order.create({
       data: {
         userId: userId,
         totalAmount: totalAmount,
-        status: "PENDING", // Trạng thái mặc định là đang chờ xử lý
+        status: "PENDING",
         items: {
           create: cartItems.map((item: any) => ({
             productId: item.id,
             quantity: item.quantity,
-            price: item.price // Lưu giá tại thời điểm mua
+            price: item.price 
           }))
         }
       }

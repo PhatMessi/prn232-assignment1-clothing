@@ -99,11 +99,9 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* LEFT COLUMN: FORM INPUT */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
             <div className="space-y-6">
               
-              {/* Product Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
                 <input
@@ -115,7 +113,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 />
               </div>
 
-              {/* Price & Stock */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
@@ -139,7 +136,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 </div>
               </div>
 
-              {/* Category */}
               <div>
                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                  <div className="relative">
@@ -160,7 +156,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                  </div>
               </div>
 
-              {/* Image URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                 <div className="flex gap-2">
@@ -177,7 +172,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 </div>
               </div>
 
-              {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                 <textarea
@@ -222,7 +216,6 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                     {formData.description || "Product description will appear here..."}
                 </p>
 
-                {/* ACTION BUTTONS (Update & Cancel) */}
                 <div className="w-full mt-auto pt-6 border-t border-gray-100 flex gap-3">
                     <Link href={`/products/${params.id}`} className="flex-1 py-3 px-4 bg-white border border-gray-300 text-gray-700 rounded-lg font-bold text-sm hover:bg-gray-50 hover:text-black transition flex items-center justify-center gap-2">
                         <X className="w-4 h-4" />
